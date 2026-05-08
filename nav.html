@@ -6,10 +6,10 @@
     <title>✨ Stymei全网综合分享 ✨</title>
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.08);
-            --glass-border: rgba(255, 255, 255, 0.12);
-            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            --text-primary: #e8e8e8;
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.25);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --text-primary: #ffffff;
             --accent-color: #4a6cf7;
         }
 
@@ -25,17 +25,18 @@
             padding-bottom: 40px;
         }
 
-        /* 动态粒子背景 */
-        #particleCanvas {
+        /* 视频背景 */
+        .bg-video {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
+            object-fit: cover;
             z-index: -2;
         }
         .background-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.6);
+            background: rgba(0, 0, 0, 0.4);
             z-index: -1;
         }
 
@@ -74,11 +75,11 @@
             box-shadow: var(--glass-shadow);
         }
 
-        /* 毛玻璃卡片 */
+        /* 毛玻璃卡片 - 增强清晰度 */
         .glass-card {
             background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-radius: 12px;
             border: 1px solid var(--glass-border);
             padding: 20px;
@@ -87,7 +88,7 @@
             overflow-x: auto;
         }
 
-        /* 表格样式 */
+        /* 表格样式 - 增强对比度 */
         .resource-table {
             width: 100%;
             border-collapse: collapse;
@@ -110,14 +111,16 @@
         }
         .resource-table td {
             padding: 10px 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
             vertical-align: middle;
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
         .resource-table tbody tr {
             transition: all 0.2s ease;
         }
         .resource-table tbody tr:hover {
-            background: rgba(74, 108, 247, 0.15);
+            background: rgba(74, 108, 247, 0.25);
             transform: translateX(3px);
         }
         .resource-table tbody tr:last-child td {
@@ -131,16 +134,17 @@
             width: 50px;
         }
 
-        /* 链接样式 */
+        /* 链接样式 - 增强可见性 */
         .resource-table a {
-            color: var(--accent-color);
+            color: #6de5ff;
             text-decoration: none;
-            font-weight: 500;
-            padding: 3px 10px;
+            font-weight: 600;
+            padding: 4px 12px;
             border-radius: 4px;
             transition: all 0.2s ease;
             display: inline-block;
             white-space: nowrap;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.4);
         }
         .resource-table a:hover {
             background: var(--accent-color);
@@ -148,7 +152,7 @@
             text-decoration: none;
         }
 
-        /* 分类标题 */
+        /* 分类标题 - 增强对比 */
         .section-title {
             font-size: 18px;
             font-weight: 700;
@@ -158,6 +162,8 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            color: #fff;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.4);
         }
 
         /* 返回按钮 */
@@ -165,13 +171,13 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            color: var(--accent-color);
+            color: #fff;
             text-decoration: none;
             font-weight: 600;
             font-size: 14px;
             padding: 8px 16px;
             border-radius: 20px;
-            background: rgba(74, 108, 247, 0.1);
+            background: rgba(74, 108, 247, 0.4);
             transition: 0.3s;
             margin-bottom: 20px;
         }
@@ -208,13 +214,14 @@
             .resource-table { font-size: 12px; }
             .resource-table th, .resource-table td { padding: 8px 10px; }
             .glass-card { padding: 15px; }
-            body { padding-top: 50px; }
         }
     </style>
 </head>
 <body>
 
-    <canvas id="particleCanvas"></canvas>
+    <video class="bg-video" autoplay muted loop playsinline>
+        <source src="bg.mp4" type="video/mp4">
+    </video>
     <div class="background-overlay"></div>
 
     <div class="main-container">
@@ -405,106 +412,12 @@
     <audio id="bgMusic" loop src="https://mpimg.cn/view.php/ac863e4b37bd7eb8388e97f15aed64dc.mp3"></audio>
 
     <script>
-        // === 动态粒子背景 ===
-        (function() {
-            const canvas = document.getElementById('particleCanvas');
-            const ctx = canvas.getContext('2d');
-            let w, h, particles = [], mouse = { x: null, y: null };
-
-            function resize() {
-                w = canvas.width = window.innerWidth;
-                h = canvas.height = window.innerHeight;
-            }
-            resize();
-            window.addEventListener('resize', resize);
-            document.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
-            document.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
-
-            const colors = ['#4a6cf7', '#ff6b6b', '#4ecdc4', '#feca57', '#ff9ff3', '#6c5ce7', '#45b7d1', '#54a0ff'];
-            const count = Math.min(80, Math.floor(window.innerWidth / 15));
-
-            class Particle {
-                constructor() { this.reset(); }
-                reset() {
-                    this.x = Math.random() * w;
-                    this.y = Math.random() * h;
-                    this.size = Math.random() * 3 + 1;
-                    this.speedX = (Math.random() - 0.5) * 1.2;
-                    this.speedY = (Math.random() - 0.5) * 1.2;
-                    this.color = colors[Math.floor(Math.random() * colors.length)];
-                    this.opacity = Math.random() * 0.5 + 0.3;
-                    this.pulse = Math.random() * Math.PI * 2;
-                }
-                update() {
-                    this.x += this.speedX;
-                    this.y += this.speedY;
-                    this.pulse += 0.02;
-                    if (mouse.x !== null) {
-                        const dx = mouse.x - this.x, dy = mouse.y - this.y;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
-                        if (dist < 150) {
-                            this.x -= dx * 0.01;
-                            this.y -= dy * 0.01;
-                        }
-                    }
-                    if (this.x < -10 || this.x > w + 10 || this.y < -10 || this.y > h + 10) this.reset();
-                }
-                draw() {
-                    const s = this.size + Math.sin(this.pulse) * 0.8;
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, s, 0, Math.PI * 2);
-                    ctx.fillStyle = this.color;
-                    ctx.globalAlpha = this.opacity + Math.sin(this.pulse) * 0.15;
-                    ctx.shadowBlur = 15;
-                    ctx.shadowColor = this.color;
-                    ctx.fill();
-                    ctx.globalAlpha = 1;
-                    ctx.shadowBlur = 0;
-                }
-            }
-
-            for (let i = 0; i < count; i++) particles.push(new Particle());
-
-            function connectParticles() {
-                for (let i = 0; i < particles.length; i++) {
-                    for (let j = i + 1; j < particles.length; j++) {
-                        const dx = particles[i].x - particles[j].x;
-                        const dy = particles[i].y - particles[j].y;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
-                        if (dist < 120) {
-                            ctx.beginPath();
-                            ctx.moveTo(particles[i].x, particles[i].y);
-                            ctx.lineTo(particles[j].x, particles[j].y);
-                            ctx.strokeStyle = particles[i].color;
-                            ctx.globalAlpha = (1 - dist / 120) * 0.15;
-                            ctx.lineWidth = 0.8;
-                            ctx.stroke();
-                            ctx.globalAlpha = 1;
-                        }
-                    }
-                }
-            }
-
-            function animate() {
-                ctx.clearRect(0, 0, w, h);
-                const grd = ctx.createLinearGradient(0, 0, w, h);
-                grd.addColorStop(0, '#0f0c29');
-                grd.addColorStop(0.5, '#302b63');
-                grd.addColorStop(1, '#24243e');
-                ctx.fillStyle = grd;
-                ctx.fillRect(0, 0, w, h);
-                particles.forEach(p => { p.update(); p.draw(); });
-                connectParticles();
-                requestAnimationFrame(animate);
-            }
-            animate();
-        })();
-
-        // === 音乐播放逻辑 ===
         const bgMusic = document.getElementById('bgMusic');
         const musicToggle = document.getElementById('musicToggle');
 
         window.addEventListener('load', () => {
+            bgMusic.muted = true;
+            bgMusic.play().then(() => {
                 musicToggle.classList.add('playing');
                 document.body.addEventListener('click', () => { bgMusic.muted = false; }, { once: true });
             }).catch(() => {});
