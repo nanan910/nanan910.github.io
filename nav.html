@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ Stymei全网综合分享 ✨</title>
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --text-primary: #333;
+            --accent-color: #4a6cf7;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+
+        body {
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+            padding: 15px;
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+
+        .background-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; }
+        .background-video { width: 100%; height: 100%; object-fit: cover; }
+        .background-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.75);
+            z-index: -1;
+        }
+
+        /* 顶部滚动条 */
+        .marquee-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 8px 0;
+            box-shadow: var(--glass-shadow);
+            overflow: hidden;
+            z-index: 100;
+        }
+        .marquee {
+            white-space: nowrap;
+            display: flex;
+            animation: marquee 15s linear infinite;
+        }
+        .marquee a {
+            color: var(--text-primary);
+            font-weight: bold;
+            text-decoration: none;
+            padding: 0 15px;
+            font-size: 14px;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* 主容器 */
+        .main-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* 标题 */
+        .page-title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57, #ff9ff3, #54a0ff);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 8s ease infinite;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 置顶GIF */
+        .top-gif {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .top-gif img {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: var(--glass-shadow);
+        }
+
+        /* 毛玻璃卡片 */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            padding: 20px;
+            box-shadow: var(--glass-shadow);
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+
+        /* 表格样式 */
+        .resource-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        .resource-table th {
+            background: linear-gradient(135deg, var(--accent-color) 0%, #6c5ce7 100%);
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+        .resource-table th:first-child {
+            border-radius: 8px 0 0 0;
+        }
+        .resource-table th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+        .resource-table td {
+            padding: 10px 15px;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            vertical-align: middle;
+        }
+        .resource-table tbody tr {
+            transition: all 0.2s ease;
+        }
+        .resource-table tbody tr:hover {
+            background: rgba(74, 108, 247, 0.08);
+            transform: translateX(3px);
+        }
+        .resource-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* 图标列 */
+        .resource-table td:first-child {
+            font-size: 1.3rem;
+            text-align: center;
+            width: 50px;
+        }
+
+        /* 链接样式 */
+        .resource-table a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 3px 10px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            display: inline-block;
+            white-space: nowrap;
+        }
+        .resource-table a:hover {
+            background: var(--accent-color);
+            color: white;
+            text-decoration: none;
+        }
+
+        /* 分类标题 */
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 返回按钮 */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: rgba(74, 108, 247, 0.1);
+            transition: 0.3s;
+            margin-bottom: 20px;
+        }
+        .back-link:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        /* Star History */
+        .star-history {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .star-history img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+
+        /* 音乐播放器 */
+        .music-player { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
+        .music-toggle {
+            width: 50px; height: 50px; border-radius: 50%; background: var(--glass-bg);
+            backdrop-filter: blur(12px); border: 1px solid var(--glass-border);
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            box-shadow: var(--glass-shadow);
+        }
+        .music-toggle.playing { animation: rotate 3s linear infinite; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .music-toggle::after { content: "♫"; font-size: 24px; color: var(--accent-color); }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .page-title { font-size: 22px; }
+            .resource-table { font-size: 12px; }
+            .resource-table th, .resource-table td { padding: 8px 10px; }
+            .glass-card { padding: 15px; }
+            body { padding-top: 50px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-layer">
+        <video class="background-video" autoplay muted loop playsinline>
+            <source src="https://txmov2.a.kwimgs.com/upic/2023/10/13/16/BMjAyMzEwMTMxNjU4MTJfMTcyNTc4NzU4N18xMTQ4OTQ2OTgxMzRfMl8z_b_B209e890a596d64fbd174507b758b0815.mp4" type="video/mp4">
+        </video>
+        <div class="background-overlay"></div>
+    </div>
+
+    <div class="marquee-container">
+        <div class="marquee">
+            <a href="https://kelayun.notepin.co" target="_blank">✈️克拉云机场，月付2元1000G流量，超低延迟的家宽ip，不限速不限设备</a>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <a href="index.html" class="back-link">← 返回首页</a>
+
+        <div class="page-title">✨ Stymei全网综合分享 ✨</div>
+
+        <div class="top-gif">
+            <img src="https://pan.baidu.re/view.php/41bd9c87450a80dc2a1f7a8731a37f1d.gif" alt="置顶GIF">
+        </div>
+
+        <!-- 常用工具 -->
+        <div class="glass-card">
+            <div class="section-title">🔥 常用工具</div>
+            <table class="resource-table">
+                <thead>
+                    <tr>
+                        <th>图标</th>
+                        <th>名称</th>
+                        <th>原始</th>
+                        <th>镜像</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>🔥</td>
+                        <td>2元1T机场</td>
+                        <td><a href="https://proxy.api.030101.xyz/kelayun.github.io" target="_blank">进入</a></td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>⚡</td>
+                        <td>镜像仓库</td>
+                        <td><a href="https://codeberg.org/Jsnzkpg/Jsnzkpg" target="_blank">进入</a></td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>✈️</td>
+                        <td>TG频道</td>
+                        <td><a href="https://t.me/stymei" target="_blank">进入</a></td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>✈️</td>
+                        <td>备用频道</td>
+                        <td><a href="https://t.me/pyapk" target="_blank">进入</a></td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>✈️</td>
+                        <td>TG群聊</td>
+                        <td><a href="https://t.me/+j664EmVv8m0wZGVk" target="_blank">进入</a></td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>✈️</td>
+                        <td>TG代理</td>
+                        <td><a href="https://Jsnzkpg.github.io/TelegramProxy" target="_blank">进入</a></td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>🔖</td>
+                        <td>书签收藏</td>
+                        <td><a href="https://Jsnzkpg.github.io" target="_blank">进入</a></td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>🚀</td>
+                        <td>共享火箭</td>
+                        <td><a href="https://stymei.github.io" target="_blank">进入</a></td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>🐈‍⬛</td>
+                        <td>Github加速</td>
+                        <td><a href="https://pyapk.github.io" target="_blank">进入</a></td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>🔄</td>
+                        <td>订阅转换</td>
+                        <td><a href="https://stymei.cc.cd" target="_blank">进入</a></td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>🔗</td>
+                        <td>直链托管</td>
+                        <td><a href="https://Jsnzkpg.github.io/Jsnzkpg" target="_blank">进入</a></td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>🎧</td>
+                        <td>音乐网站</td>
+                        <td><a href="https://Jsnzkpg.github.io/music" target="_blank">进入</a></td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>🔍</td>
+                        <td>网盘搜索</td>
+                        <td><a href="https://Jsnzkpg.github.io/pansou" target="_blank">进入</a></td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>📭</td>
+                        <td>临时邮箱</td>
+                        <td><a href="https://Jsnzkpg.github.io/email" target="_blank">进入</a></td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>🤖</td>
+                        <td>智能Ai</td>
+                        <td><a href="https://Jsnzkpg.github.io/ai" target="_blank">进入</a></td>
+                        <td>-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 订阅资源 -->
+        <div class="glass-card">
+            <div class="section-title">📦 订阅资源</div>
+            <table class="resource-table">
+                <thead>
+                    <tr>
+                        <th>图标</th>
+                        <th>名称</th>
+                        <th>原始</th>
+                        <th>镜像</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>🪜</td>
+                        <td>节点订阅</td>
+                        <td><a href="https://raw.githubusercontent.com/Jsnzkpg/Jsnzkpg/Jsnzkpg/Jsnzkpg" target="_blank">原始</a></td>
+                        <td><a href="https://codeberg.org/Jsnzkpg/Jsnzkpg/raw/Jsnzkpg/Jsnzkpg" target="_blank">镜像</a></td>
+                    </tr>
+                    <tr>
+                        <td>📺</td>
+                        <td>IPTV订阅</td>
+                        <td><a href="https://raw.githubusercontent.com/Jsnzkpg/Jsnzkpg/Jsnzkpg/Jsnzkpg1.m3u" target="_blank">原始</a></td>
+                        <td><a href="https://codeberg.org/Jsnzkpg/Jsnzkpg/raw/Jsnzkpg/Jsnzkpg1.m3u" target="_blank">镜像</a></td>
+                    </tr>
+                    <tr>
+                        <td>🎥</td>
+                        <td>TVbox订阅</td>
+                        <td><a href="https://raw.githubusercontent.com/Jsnzkpg/Jsnzkpg/Jsnzkpg/Jsnzkpg2" target="_blank">原始</a></td>
+                        <td><a href="https://codeberg.org/Jsnzkpg/Jsnzkpg/raw/Jsnzkpg/Jsnzkpg2" target="_blank">镜像</a></td>
+                    </tr>
+                    <tr>
+                        <td>🎞️</td>
+                        <td>UZ影视订阅</td>
+                        <td><a href="https://raw.githubusercontent.com/Jsnzkpg/Jsnzkpg/Jsnzkpg/Jsnzkpg3" target="_blank">原始</a></td>
+                        <td><a href="https://codeberg.org/Jsnzkpg/Jsnzkpg/raw/Jsnzkpg/Jsnzkpg3" target="_blank">镜像</a></td>
+                    </tr>
+                    <tr>
+                        <td>📽️</td>
+                        <td>Cinetry订阅</td>
+                        <td><a href="https://raw.githubusercontent.com/Jsnzkpg/Jsnzkpg/Jsnzkpg/Jsnzkpg4" target="_blank">原始</a></td>
+                        <td><a href="https://codeberg.org/Jsnzkpg/Jsnzkpg/raw/Jsnzkpg/Jsnzkpg4" target="_blank">镜像</a></td>
+                    </tr>
+                    <tr>
+                        <td>📹</td>
+                        <td>EchoTV订阅</td>
+                        <td><a href="https://raw.githubusercontent.com/Jsnzkpg/Jsnzkpg/Jsnzkpg/Jsnzkpg5" target="_blank">原始</a></td>
+                        <td><a href="https://codeberg.org/Jsnzkpg/Jsnzkpg/raw/Jsnzkpg/Jsnzkpg5" target="_blank">镜像</a></td>
+                    </tr>
+                    <tr>
+                        <td>🐱</td>
+                        <td>猫源订阅</td>
+                        <td><a href="https://raw.githubusercontent.com/Jsnzkpg/stymei/Jsnzkpg/index.js.md5" target="_blank">原始</a></td>
+                        <td><a href="https://gh-proxy.org/https://raw.githubusercontent.com/Jsnzkpg/stymei/Jsnzkpg/index.js.md5" target="_blank">镜像</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Star History -->
+        <div class="glass-card star-history">
+            <div class="section-title">⭐ Star History</div>
+            <img src="https://api.star-history.com/svg?repos=jsnzkpg/jsnzkpg&type=Date&legend=top-left" alt="Star History Chart">
+        </div>
+    </div>
+
+    <div class="music-player">
+        <div class="music-toggle" id="musicToggle"></div>
+    </div>
+    <audio id="bgMusic" loop src="https://mpimg.cn/view.php/ac863e4b37bd7eb8388e97f15aed64dc.mp3"></audio>
+
+    <script>
+        const bgMusic = document.getElementById('bgMusic');
+        const musicToggle = document.getElementById('musicToggle');
+
+        window.addEventListener('load', () => {
+            bgMusic.muted = true;
+            bgMusic.play().then(() => {
+                musicToggle.classList.add('playing');
+                document.body.addEventListener('click', () => { bgMusic.muted = false; }, { once: true });
+            }).catch(() => {});
+        });
+
+        musicToggle.onclick = () => {
+            if (bgMusic.paused) { bgMusic.play(); musicToggle.classList.add('playing'); }
+            else { bgMusic.pause(); musicToggle.classList.remove('playing'); }
+        };
+    </script>
+</body>
+</html>
